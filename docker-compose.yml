@@ -1,0 +1,35 @@
+version: '3'
+services:
+  nuxt:
+    build: docker/nuxt
+    volumes:
+      - ./nuxt:/app
+      - nuxt_node_modules:/app/node_modules
+    expose:
+      - "3000"
+    tty: true
+    networks:
+      - app-net
+    command:
+      - sh
+      - -c
+      - |
+        npm install
+        npm run dev
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - nuxt
+    networks:
+      - app-net
+
+networks:
+  app-net:
+
+volumes:
+  nuxt_node_modules:
+
